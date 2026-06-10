@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App de Pedidos - Peixaria Umirim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f9f9f9;
+            color: #333;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #009688;
+        }
+        form {
+            max-width: 400px;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form input, form select, form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 1em;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        table th {
+            background: #009688;
+            color: #fff;
+        }
+        tfoot td {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .total {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #00796b;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Peixaria Umirim</h1>
+    <h2>Cadastro de Pedidos</h2>
+
+    <form id="orderForm">
+        <label for="fish">Tipo de Peixe:</label>
+        <select id="fish" required>
+            <option value="">Selecione um peixe</option>
+            <option value="Tilápia">Tilápia - R$20,00/kg</option>
+            <option value="Sardinha">Sardinha - R$15,00/kg</option>
+            <option value="Camarão">Camarão - R$50,00/kg</option>
+            <option value="Lagosta">Lagosta - R$120,00/kg</option>
+        </select>
+
+        <label for="quantity">Quantidade (kg):</label>
+        <input type="number" id="quantity" min="0.1" step="0.1" required placeholder="Ex: 2.5">
+
+        <button type="submit">Adicionar Pedido</button>
+    </form>
+
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>Peixe</th>
+                <th>Quantidade (kg)</th>
+                <th>Preço Unitário (R$)</th>
+                <th>Subtotal (R$)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Pedidos aparecerão aqui -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total</td>
+                <td id="total">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <script>
+        // Preços fixos por tipo de peixe
+        const fishPrices = {
+            "Tilápia": 20.00,
+            "Sardinha": 15.00,
+            "Camarão": 50.00,
+            "Lagosta": 120.00
+        };
+
+        const orderForm = document.getElementById('orderForm');
+        const orderTableBody = document.querySelector('#orderTable tbody');
+        const totalCell = document.getElementById('total');
+
+        let total = 0;
+
+        orderForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const fish = document.getElementById('fish').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+
+            if (!fish || quantity <= 0) return;
+
+            const unitPrice = fishPrices[fish];
+            const subtotal = unitPrice * quantity;
+
+            // Adiciona linha na tabela
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${fish}</td>
+                <td>${quantity.toFixed(2)}</td>
+                <td>${unitPrice.toFixed(2)}</td>
+                <td>${subtotal.toFixed(2)}</td>
+            `;
+            orderTableBody.appendChild(row);
+
+            // Atualiza total
+            total += subtotal;
+            totalCell.textContent = total.toFixed(2);
+
+            // Reseta o formulário
+            orderForm.reset();
+        });
+    </script>
+
+</body>
+</html>
